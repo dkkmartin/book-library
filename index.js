@@ -1,17 +1,39 @@
-let myLibrary = [
-    {
-        title: "Batman",
-        author: "DC Comics",
-        pages: "24",
-        haveread: "Yes",
-    },
-    {
-        title: "Spider-Man",
-        author: "Marvel",
-        pages: "34",
-        haveread: "Yes",
-    },
-];
+const addNewBookBtn = document.getElementById("add-btn");
+const modal = document.getElementById("modal");
+const newBookBtn = document.getElementById("add-book");
+const closebtn = document.getElementsByClassName("close-btn")[0];
+
+const newBookForm = document.getElementById("book-form");
+const formtTitle = newBookForm.elements["title"];
+const formAuthor = newBookForm.elements["author"];
+const formPages = newBookForm.elements["pages"];
+const formRead = newBookForm.elements["haveRead"];
+
+newBookForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    let title = formtTitle.value;
+    let author = formAuthor.value;
+    let pages = formPages.value;
+    let read = formRead.value;
+    addBookToLibrary(title, author, pages, read);
+});
+
+newBookBtn.onclick = function () {
+    modal.style.display = "block";
+};
+
+closebtn.onclick = function () {
+    modal.style.display = "none";
+};
+
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+};
+
+let myLibrary = [];
 
 function Book(title, author, pages, haveRead) {
     this.title = title;
@@ -20,15 +42,15 @@ function Book(title, author, pages, haveRead) {
     this.haveRead = haveRead;
 }
 
-function addBookToLibrary() {
-    const bookTitle = window.prompt("Enter book title:");
-    const bookAuthor = window.prompt("Enter book author:");
-    const bookPages = window.prompt("Enter book pages:");
-    let bookHaveRead = window.prompt("Have you read it?:");
-    const newbook = new Book(bookTitle, bookAuthor, bookPages, bookHaveRead);
+function addBookToLibrary(title, author, pages, haveRead) {
+    const newbook = new Book(title, author, pages, haveRead);
     myLibrary.push(newbook);
+    displayBook();
 }
 
+// Not working correctly. Forgot about when im adding new books.
+// This func creates divs based on array.length.
+// It should create divs based on array items using forEach.
 function displayBook() {
     const booksContainer = document.querySelector(".books");
     for (let x = 0; x < myLibrary.length; x++) {
