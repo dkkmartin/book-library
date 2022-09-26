@@ -11,13 +11,27 @@ const formRead = newBookForm.elements["haveRead"];
 
 newBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
-
     let title = formtTitle.value;
     let author = formAuthor.value;
     let pages = formPages.value;
     let read = formRead.value;
+    if (pages <= 0) {
+        alert("You must enter pages higher than 0");
+        modal.style.display = "block";
+        return false;
+    }
+    if (title == "" || author == "" || pages == "" || read == "") {
+        alert("You must fill out empty spaces");
+        modal.style.display = "block";
+        return false;
+    }
     addBookToLibrary(title, author, pages, read);
+    newBookForm.reset();
 });
+
+addNewBookBtn.onclick = function () {
+    modal.style.display = "none";
+};
 
 newBookBtn.onclick = function () {
     modal.style.display = "block";
@@ -48,21 +62,26 @@ function addBookToLibrary(title, author, pages, haveRead) {
     displayBook();
 }
 
-// Not working correctly. Forgot about when im adding new books.
-// This func creates divs based on array.length.
-// It should create divs based on array items using forEach.
 function displayBook() {
-    const booksContainer = document.querySelector(".books");
-    for (let x = 0; x < myLibrary.length; x++) {
+    let i = 1;
+
+    //Remove every book div before constructing new divs
+    const removeBooks = document.querySelectorAll("div.books > div").forEach((e) => e.remove());
+    //For each item in array, create one div with id=book[i]
+    myLibrary.forEach(() => {
+        const booksContainer = document.getElementsByClassName("books")[0];
         const div = document.createElement("div");
-        div.classList.add(`content${x + 1}`);
+        div.classList.add(`book`);
+        div.setAttribute("id", `book${i}`);
         booksContainer.appendChild(div);
-    }
+        i++;
+    });
+    //fill the div with the object in the array[i]
     for (let i = 0; i < myLibrary.length; i++) {
         for (const key in myLibrary[i]) {
             if (Object.hasOwnProperty.call(myLibrary[i], key)) {
                 const element = myLibrary[i][key];
-                const contentContainer = document.querySelector(`.content${i + 1}`);
+                const contentContainer = document.querySelector(`#book${i + 1}`);
                 const p = document.createElement("p");
                 p.textContent = element;
                 contentContainer.appendChild(p);
@@ -71,4 +90,20 @@ function displayBook() {
     }
 }
 
-displayBook();
+// const booksContainer = document.querySelector(".books");
+// for (let x = 0; x < myLibrary.length; x++) {
+//     const div = document.createElement("div");
+//     div.classList.add(`content${x + 1}`);
+//     booksContainer.appendChild(div);
+// }
+// for (let i = 0; i < myLibrary.length; i++) {
+//     for (const key in myLibrary[i]) {
+//         if (Object.hasOwnProperty.call(myLibrary[i], key)) {
+//             const element = myLibrary[i][key];
+//             const contentContainer = document.querySelector(`.content${i + 1}`);
+//             const p = document.createElement("p");
+//             p.textContent = element;
+//             contentContainer.appendChild(p);
+//         }
+//     }
+// }
