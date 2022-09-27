@@ -2,8 +2,9 @@ const addNewBookBtn = document.getElementById("add-btn");
 const modal = document.getElementById("modal");
 const newBookBtn = document.getElementById("add-book");
 const closebtn = document.getElementsByClassName("close-btn")[0];
-
 const newBookForm = document.getElementById("book-form");
+
+const removeBook = document.getElementById("remove-book");
 const formtTitle = newBookForm.elements["title"];
 const formAuthor = newBookForm.elements["author"];
 const formPages = newBookForm.elements["pages"];
@@ -15,13 +16,13 @@ newBookForm.addEventListener("submit", (event) => {
     let author = formAuthor.value;
     let pages = formPages.value;
     let read = formRead.value;
-    if (pages <= 0) {
-        alert("You must enter pages higher than 0");
+    if (title == "" || author == "" || pages == "" || read == "") {
+        alert("You must fill out empty spaces");
         modal.style.display = "block";
         return false;
     }
-    if (title == "" || author == "" || pages == "" || read == "") {
-        alert("You must fill out empty spaces");
+    if (pages <= 0) {
+        alert("You must enter pages higher than 0");
         modal.style.display = "block";
         return false;
     }
@@ -40,6 +41,11 @@ newBookBtn.onclick = function () {
 closebtn.onclick = function () {
     modal.style.display = "none";
 };
+function removeBookFromLibrary(id) {
+    let arrayIndex = id.getAttribute("data-array-index");
+    myLibrary.splice(arrayIndex, 1);
+    displayBook();
+}
 
 window.onclick = function (event) {
     if (event.target == modal) {
@@ -76,34 +82,29 @@ function displayBook() {
         booksContainer.appendChild(div);
         i++;
     });
-    //fill the div with the object in the array[i]
-    for (let i = 0; i < myLibrary.length; i++) {
-        for (const key in myLibrary[i]) {
-            if (Object.hasOwnProperty.call(myLibrary[i], key)) {
-                const element = myLibrary[i][key];
-                const contentContainer = document.querySelector(`#book${i + 1}`);
+
+    //fill the div with the object in the array[x]
+    for (let x = 0; x < myLibrary.length; x++) {
+        const contentContainer = document.querySelector(`#book${x + 1}`);
+        for (const key in myLibrary[x]) {
+            if (Object.hasOwnProperty.call(myLibrary[x], key)) {
+                const element = myLibrary[x][key];
                 const p = document.createElement("p");
                 p.textContent = element;
                 contentContainer.appendChild(p);
             }
         }
+        //Create a remove button
+        const removeBook = document.createElement("button");
+        removeBook.setAttribute("id", "remove-book");
+        removeBook.setAttribute("onclick", "removeBookFromLibrary(this)");
+        removeBook.setAttribute("data-array-index", `${x}`);
+        removeBook.textContent = "Remove";
+        contentContainer.appendChild(removeBook);
+
+        // Create a read toggle button
+        const readToggle = document.createElement("button");
+        readToggle.textContent = "Read";
+        contentContainer.appendChild(readToggle);
     }
 }
-
-// const booksContainer = document.querySelector(".books");
-// for (let x = 0; x < myLibrary.length; x++) {
-//     const div = document.createElement("div");
-//     div.classList.add(`content${x + 1}`);
-//     booksContainer.appendChild(div);
-// }
-// for (let i = 0; i < myLibrary.length; i++) {
-//     for (const key in myLibrary[i]) {
-//         if (Object.hasOwnProperty.call(myLibrary[i], key)) {
-//             const element = myLibrary[i][key];
-//             const contentContainer = document.querySelector(`.content${i + 1}`);
-//             const p = document.createElement("p");
-//             p.textContent = element;
-//             contentContainer.appendChild(p);
-//         }
-//     }
-// }
