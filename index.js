@@ -3,12 +3,15 @@ const modal = document.getElementById("modal");
 const newBookBtn = document.getElementById("add-book");
 const closebtn = document.getElementsByClassName("close-btn")[0];
 const newBookForm = document.getElementById("book-form");
+let newbook;
 
 const removeBook = document.getElementById("remove-book");
 const formtTitle = newBookForm.elements["title"];
 const formAuthor = newBookForm.elements["author"];
 const formPages = newBookForm.elements["pages"];
 const formRead = newBookForm.elements["haveRead"];
+
+let myLibrary = [];
 
 newBookForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -41,11 +44,6 @@ newBookBtn.onclick = function () {
 closebtn.onclick = function () {
     modal.style.display = "none";
 };
-function removeBookFromLibrary(id) {
-    let arrayIndex = id.getAttribute("data-array-index");
-    myLibrary.splice(arrayIndex, 1);
-    displayBook();
-}
 
 window.onclick = function (event) {
     if (event.target == modal) {
@@ -53,7 +51,23 @@ window.onclick = function (event) {
     }
 };
 
-let myLibrary = [];
+function removeBookFromLibrary(id) {
+    let arrayIndex = id.getAttribute("data-array-index");
+    myLibrary.splice(arrayIndex, 1);
+    displayBook();
+}
+
+function changeReadStatus(id) {
+    const arrayIndex = id.getAttribute("data-array-index");
+    let readStatus = myLibrary[arrayIndex].haveRead;
+    if (readStatus == "Not read") {
+        myLibrary[arrayIndex].haveRead = "Have read";
+    }
+    if (readStatus == "Have read") {
+        myLibrary[arrayIndex].haveRead = "Not read";
+    }
+    displayBook();
+}
 
 function Book(title, author, pages, haveRead) {
     this.title = title;
@@ -63,7 +77,7 @@ function Book(title, author, pages, haveRead) {
 }
 
 function addBookToLibrary(title, author, pages, haveRead) {
-    const newbook = new Book(title, author, pages, haveRead);
+    newbook = new Book(title, author, pages, haveRead);
     myLibrary.push(newbook);
     displayBook();
 }
@@ -90,6 +104,9 @@ function displayBook() {
             if (Object.hasOwnProperty.call(myLibrary[x], key)) {
                 const element = myLibrary[x][key];
                 const p = document.createElement("p");
+                if (typeof element == "function") {
+                    continue;
+                }
                 p.textContent = element;
                 contentContainer.appendChild(p);
             }
@@ -105,6 +122,9 @@ function displayBook() {
         // Create a read toggle button
         const readToggle = document.createElement("button");
         readToggle.textContent = "Read";
+        readToggle.setAttribute("id", "read-toggle");
+        readToggle.setAttribute("data-array-index", `${x}`);
+        readToggle.setAttribute("onclick", "changeReadStatus(this)");
         contentContainer.appendChild(readToggle);
     }
 }
