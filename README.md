@@ -1,2 +1,2 @@
 # Book Library
-# [Live Demo](https://github.com/dkkmartin/book-library)
+# [Live Demo](https://dkkmartin.github.io/book-library/)
